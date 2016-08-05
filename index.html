@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Graph</title>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.css">
+	<style>
+		body {
+			font-size: 12px;
+			font-family: sans-serif;
+		}
+		.wrap {
+			background: rgba(246,246,246,1);
+			width: 1000px;
+			height: 400px;
+			margin: 20px auto;
+			position: relative;
+		}
+		.graph {
+			height: 400px;
+			width: 1000px;
+		}
+
+		.legend .labels.x-labels {
+			/*text-anchor: middle;*/
+		}
+
+		.legend .labels.y-labels {
+			text-anchor: end;
+			alignment-baseline: central;
+		}
+
+		.labels {
+			fill: rgba(155,155,155,1);
+		}
+
+		.chart {
+
+		}
+
+		.y-grid {
+			stroke: rgba(228,228,228,1);
+			stroke-width: 1;
+		}
+
+		.tooltip {
+			position: absolute;
+			background: #fff;
+			padding: 8px 12px;
+			-webkit-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.3);
+			-moz-box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.3);
+			box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.3);
+			-webkit-border-radius: 3px;
+			-moz-border-radius: 3px;
+			border-radius: 3px;
+			opacity: 0;
+		}
+
+		.tooltip .date {
+			margin-bottom: 5px;
+			color: rgba(170,170,170,1);
+		}
+
+		.tooltip .course {
+			color: rgba(110,110,110,1);
+			margin-right: 10px;
+		}
+
+		.tooltip .delta.positive {
+			color: rgba(29,157,81,1);
+		}
+
+	</style>
+</head>
+<body>
+	<div id="app">
+		<div class="wrap">
+			<svg xmlns="http://www.w3.org/2000/svg" class="graph">
+				<g class="legend">
+					<g class="labels y-labels">
+						<text x="30" y="20">100</text>
+						<text x="30" y="88">80</text>
+						<text x="30" y="156">65</text>
+						<text x="30" y="222">40</text>
+						<text x="30" y="290">20</text>
+						<text x="30" y="360">0</text>
+					</g>
+					<g class="labels x-labels">
+						<text x="75" y="385">Январь</text>
+						<text x="150" y="385">Февраль</text>
+						<text x="225" y="385">Март</text>
+						<text x="300" y="385">Апрель</text>
+						<text x="375" y="385">Май</text>
+						<text x="450" y="385">Июнь</text>
+						<text x="525" y="385">Июль</text>
+						<text x="600" y="385">Август</text>
+						<text x="675" y="385">Сентябрь</text>
+						<text x="750" y="385">Октябрь</text>
+						<text x="825" y="385">Ноябрь</text>
+						<text x="900" y="385">Декабрь</text>
+					</g>
+				</g>
+				<g class="grid" transform="translate(50,20)">
+					<g class="y-grid">
+						<line x1="0" x2="920" y1="1" y2="1"></line>
+						<line x1="0" x2="920" y1="68" y2="68"></line>
+						<line x1="0" x2="920" y1="136" y2="136"></line>
+						<line x1="0" x2="920" y1="202" y2="202"></line>
+						<line x1="0" x2="920" y1="270" y2="270"></line>
+						<line x1="0" x2="920" y1="339" y2="340"></line>
+					</g>
+				</g>
+				<g class="chart" transform="translate(50,20)">
+					<g class="lines-group">
+						<g class="line line-1">
+							<polyline fill="none" stroke="rgb(118,164,197)" stroke-width="1" 
+							points="0,120 50,30 80,90 100,250 150,140 200,80 250,110 300,180 320,280 340,320 360,250 400,280 420,220 480,40 500,20 600,100 700,140 920,150"/>
+						</g>
+					</g>
+					<g class="interactive">
+						<line x1="250" x2="250" y1="110" y2="340" stroke="rgba(215,215,215,1)" stroke-dasharray="5 3"></line>
+					</g>
+					<g class="circles-group">
+						<g class="circles circles-1" fill="rgb(118,164,197)" stroke="rgba(246,246,246,1)"  stroke-width="2">
+							<circle cx="0" cy="120" r="4" ></circle>
+							<circle cx="50" cy="30" r="4" ></circle>
+							<circle cx="80" cy="90" r="4" ></circle>
+							<circle cx="100" cy="250" r="4" ></circle>
+							<circle cx="150" cy="140" r="4" ></circle>
+							<circle cx="200" cy="80" r="4" ></circle>
+							<circle cx="250" cy="110" r="4" ></circle>
+							<circle cx="300" cy="180" r="4" ></circle>
+							<circle cx="320" cy="280" r="4" ></circle>
+						</g>
+					</g>
+				</g>
+			</svg>
+			<div class="tooltip" style="top:75px;left:305px;opacity:1;">
+				<div class="date">24 июля 2015</div>
+				<div class="info"><span class="course">$ <span>63,01</span></span><span class="delta positive">&#9650; <span>0,52</span></span></div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
