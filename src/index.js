@@ -6,7 +6,6 @@ import TinGraph from './components/TinGraph';
 import graphApp from './reducers';
 
 let store = createStore(graphApp);
-console.log(store.getState());
 
 const App = () => (
 	<div>

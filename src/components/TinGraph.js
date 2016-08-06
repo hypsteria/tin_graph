@@ -2,7 +2,6 @@ import React from 'react';
 import Legend from './Legend';
 import Grid from './Grid';
 import Chart from './Chart';
-import Tooltip from './Tooltip';
 
 const wrapStyles = {
 	'background': 'rgba(246,246,246,1)',
@@ -24,7 +23,6 @@ const TinGraph = () => (
 			<Grid />
 			<Chart />
 		</svg>
-		<Tooltip />
 	</div>
 );
 
