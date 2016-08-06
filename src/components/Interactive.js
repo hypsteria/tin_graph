@@ -48,13 +48,19 @@ class Interactive extends React.Component {
 					<line x1={this.state.x} x2={this.state.x} y1={this.state.y} y2={340} stroke="rgba(215,215,215,1)" strokeDasharray="5 3"></line>
 					<g>
 						<defs>
-							<filter id="f3" x="0" y="0" width="150%" height="150%">
-								<feOffset result="offOut" in="SourceAlpha" dx="0" dy="2" />
-								<feGaussianBlur result="blurOut" in="offOut" stdDeviation="4" />
-								<feBlend in="SourceGraphic" in2="blurOut" mode="normal" />
+							<filter id="dropshadow" height="130%">
+								<feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+								<feOffset dx="0" dy="2" result="offsetblur"/>
+								<feComponentTransfer xmlns="http://www.w3.org/2000/svg">
+									<feFuncA type="linear" slope="0.2"/>
+								</feComponentTransfer>
+								<feMerge> 
+									<feMergeNode/>
+									<feMergeNode in="SourceGraphic"/>
+								</feMerge>
 							</filter>
 						</defs>
-						<rect x={xTooltip} y={yTooltip} width="120" height="50" rx="3" ry="3" fill="#fff" filter="url(#f3)" />
+						<rect x={xTooltip} y={yTooltip} width="120" height="50" rx="3" ry="3" fill="#fff" filter="url(#dropshadow)" />
 						<text x={xTooltip + 10} y={yTooltip + 20} style={dateStyles}>24 июля 2015</text>
 						<g>
 							<text x={xTooltip + 10} y={yTooltip + 38} style={courseStyles}>$ 63,01</text>
