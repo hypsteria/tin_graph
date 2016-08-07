@@ -24,28 +24,56 @@ const deltaStyles = {
 	'fill': 'rgba(29,157,81,1)',
 }
 
+const deltaStylesDown = {
+	'fill': 'rgba(255,70,70,1)',
+}
+
+const monthNames = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+
 class Interactive extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {  x: props.currentPoints && props.currentPoints[0].x || 0,
-						y: props.currentPoints && props.currentPoints[0].y || 0};
+		this.state = {  x: 0,
+						y: 0 };
 	};
 
 	componentWillReceiveProps (nextProps) {
-		this.state = {  x: +nextProps.currentPoints[0].x,
-						y: +nextProps.currentPoints[0].y };
+		if (nextProps.interactive.show) this.state = {  x: +nextProps.interactive.currentPoint.x,
+														y: +nextProps.interactive.currentPoint.y };
+	};
+
+	formatDate(date) {
+		var arr = date.split('-');
+		return arr[2] + ' ' + monthNames[arr[1]] + ' ' + arr[0];
 	};
 
 	render() {
 
-		if (this.props.interactive) {
+		let interactive = this.props.interactive;
+		if (interactive && interactive.show) {
 
 			let xTooltip = (this.state.x + 5 < 810) ? this.state.x + 5 : this.state.x - 125;
 			let yTooltip = (this.state.y - 55 > 0) ? this.state.y - 55 : 0;
+			let currentVal = interactive.currentPoint.value.toFixed(2).toString();
+			let currentDate = this.formatDate(interactive.currentPoint.date);
+			var delta = interactive.currentPoint.delta;
+			let currentDelta = null;
+
+			if (delta >= 0) currentDelta = (<text x={xTooltip + 60} y={yTooltip + 38} style={deltaStyles}>&#9650; {delta}</text>);
+			else currentDelta = (<text x={xTooltip + 60} y={yTooltip + 38} style={deltaStylesDown}>&#9660; {delta}</text>);
 
 			return (
 				<g>
-					<line x1={this.state.x} x2={this.state.x} y1={this.state.y} y2={340} stroke="rgba(215,215,215,1)" strokeDasharray="5 3"></line>
+					<line x1={this.state.x} x2={this.state.x} 
+							y1={this.state.y} y2={340} 
+							stroke="rgba(215,215,215,1)" 
+							strokeDasharray="5 3">
+					</line>
+					<circle cx={this.state.x} cy={this.state.y} r="4" 
+							fill={this.props.circleColor} 
+							stroke="rgba(246,246,246,1)"
+							strokeWidth="2" >
+					</circle>
 					<g>
 						<defs>
 							<filter id="dropshadow" height="130%">
@@ -61,10 +89,10 @@ class Interactive extends React.Component {
 							</filter>
 						</defs>
 						<rect x={xTooltip} y={yTooltip} width="120" height="50" rx="3" ry="3" fill="#fff" filter="url(#dropshadow)" />
-						<text x={xTooltip + 10} y={yTooltip + 20} style={dateStyles}>24 июля 2015</text>
+						<text x={xTooltip + 10} y={yTooltip + 20} style={dateStyles}>{currentDate}</text>
 						<g>
-							<text x={xTooltip + 10} y={yTooltip + 38} style={courseStyles}>$ 63,01</text>
-							<text x={xTooltip + 60} y={yTooltip + 38} style={deltaStyles}>&#9650; 0,52</text>
+							<text x={xTooltip + 10} y={yTooltip + 38} style={courseStyles}>$ {currentVal}</text>
+							{currentDelta}
 						</g>
 					</g>
 				</g>
@@ -78,7 +106,6 @@ class Interactive extends React.Component {
 
 const mapStateToProps = (state, ownProps) => {
 	return {
-		currentPoints: state.Graph.currentPoints,
 		interactive: state.Graph.interactive,
 	};
 };

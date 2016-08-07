@@ -1,53 +1,70 @@
-import uuid from 'uuid-v4';
-import initialState from '../other/data';
+import initialState from '../other/complexData';
+
+const field = [920,338]; // viewport области для графика
+const monthLenght = [0,31,59,90,120,151,181,212,242,272,303,333,364]; // накопительная сумма дней в месяцах, для удобства расчета точек грифка
 
 function calcGraph(data) {
 
-	let lines = data.lines;
-	let circlesGroup = [];
-	let linesGroup = [];
+	let record = data.record;
 
-	lines.forEach((line, k) => {
-		let arr = line.split(' ');
-		arr.forEach((str, i) => {
-			var points = str.split(',');
-			arr[i] = { x: points[0], y: points[1], key: uuid() };
-		});
-		circlesGroup.push({circles: arr, key: uuid()});
-		linesGroup.push({points: line, key: uuid() });
+	let line = '';
+	let info = [];
+
+	record.forEach((val) => {
+		let coords = translateToXY(val);
+		line += coords[0] + ',' + coords[1] + ' ';
+
+		let point = {   x: coords[0], 
+						y: coords[1],
+						value: val.value,
+						date: val.date,
+					};
+		info.push(point);
 	});
 
-	return { linesGroup, circlesGroup };
+	return { graph: { points: line, info }};
 }
 
-function nearestPoint(x, circlesGroup) {
+function translateToXY(val) {
+	var date = val.date.split('-');
+	let days = +monthLenght[date[1]] + +(date[2]);
+	let x = days * field[0] / monthLenght[monthLenght.length-1];
+	let y = field[1] - val.value * field[1] / 100;
+	return [x, y];
+}
 
-	var currentPoints = [];
+function nearestPoint(x, points) {
 
-	circlesGroup.forEach((circles) => {
-		for (var i = 1, len = circles.circles.length; i < len; i++ ) {
-			if (Math.abs(circles.circles[i-1].x - x) < Math.abs(circles.circles[i].x - x)) {
-				currentPoints.push({x: circles.circles[i-1].x, y: circles.circles[i-1].y});
-				break;
-			} else if (i === len - 1) {
-				currentPoints.push({x: circles.circles[i].x, y: circles.circles[i].y});
+	var nearestPoint = {};
+
+	for (var i = 1, len = points.length; i < len; i++ ) {
+		let delta = 0;
+		if (Math.abs(points[i-1].x - x) < Math.abs(points[i].x - x)) {
+			if (points[i-2]) {
+				delta = (points[i-1].value - points[i-2].value).toFixed(2);
 			}
+			nearestPoint = Object.assign({}, points[i-1], {delta});
+			break;
+		} else if (i === len - 1) {
+			delta = (points[i].value - points[i-1].value).toFixed(2);
+			nearestPoint = Object.assign({}, points[i], {delta});
 		}
-	});
+	}
 
-	return currentPoints;
+	return nearestPoint;
 }
 
 const GraphReducer = (state = calcGraph(initialState), action) => {
 	switch (action.type) {
 		case 'MOUSE_MOVE': 
 			{
-				let currentPoints = nearestPoint(action.x, state.circlesGroup);
-				return Object.assign({}, state, {currentPoints, interactive: true});
+				let currentPoint = nearestPoint(action.x, state.graph.info);
+				let interactive = { show: true, currentPoint };
+				return Object.assign({}, state, { interactive });
 			}
 		case 'MOUSE_OUT': 
-			{
-				return Object.assign({}, state, {interactive: false});
+			{	
+				return Object.assign({}, state, {interactive: {show: false}});
 			}
 		default:
 			return state;
